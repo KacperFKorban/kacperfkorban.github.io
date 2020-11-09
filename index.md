@@ -13,4 +13,7 @@ Junior Scala Developer @ VirtusLab
 # Projects
 
 ## [Inkuire](https://github.com/VirtusLab/Inkuire)
+
 Hoogle like tool for executing semantic queries on Kotlin libraries.
+
+![Inkuire](inkuire_screen.png)
