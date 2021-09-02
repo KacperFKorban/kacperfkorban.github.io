@@ -1,19 +1,6 @@
-**Under construction**
-# About me
-Kacper Korban
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
-Computer Science Student @ AGH UST
-
-Junior Scala Developer @ VirtusLab
-
-# Blog posts
-
-* ...
-
-# Projects
-
-## [Inkuire](https://github.com/VirtusLab/Inkuire)
-
-Hoogle like tool for executing semantic queries on Kotlin libraries.
-
-![Inkuire](inkuire_screen.png)
+layout: home
+---
