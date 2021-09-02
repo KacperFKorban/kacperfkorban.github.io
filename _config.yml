@@ -1,4 +1,4 @@
-title: KacperFKorban's blog
+title: Kacper Korban's blog
 email: kacper.f.korban@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   Kacper Korban's blog site
@@ -9,6 +9,6 @@ github_username:  KacperFKorban
 
 # Build settings
 markdown: kramdown
-theme: minima
+theme: jekyll-simple-dark
 plugins:
   - jekyll-feed

@@ -159,6 +159,8 @@ GEM
       sass (~> 3.4)
     jekyll-seo-tag (2.7.1)
       jekyll (>= 3.8, < 5.0)
+    jekyll-simple-dark (0.4.0)
+      jekyll (~> 3.6)
     jekyll-sitemap (1.4.0)
       jekyll (>= 3.7, < 5.0)
     jekyll-swiss (1.0.0)
@@ -274,6 +276,7 @@ PLATFORMS
 DEPENDENCIES
   github-pages (~> 219)
   jekyll-feed (~> 0.6)
+  jekyll-simple-dark
   minima (~> 2.0)
   tzinfo (~> 1.2)
   tzinfo-data
