@@ -12,3 +12,7 @@ markdown: kramdown
 theme: jekyll-simple-dark
 plugins:
   - jekyll-feed
+  - jekyll-paginate
+
+paginate: 5
+paginate_path: "page:num/"
