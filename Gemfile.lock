@@ -1,3 +1,12 @@
+GIT
+  remote: https://github.com/jekyll/minima
+  revision: 3cdd14dff1216f561c68329e0b7420c2dc9b796a
+  specs:
+    minima (2.5.1)
+      jekyll (>= 3.5, < 5.0)
+      jekyll-feed (~> 0.9)
+      jekyll-seo-tag (~> 2.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -159,8 +168,6 @@ GEM
       sass (~> 3.4)
     jekyll-seo-tag (2.7.1)
       jekyll (>= 3.8, < 5.0)
-    jekyll-simple-dark (0.4.0)
-      jekyll (~> 3.6)
     jekyll-sitemap (1.4.0)
       jekyll (>= 3.7, < 5.0)
     jekyll-swiss (1.0.0)
@@ -222,10 +229,6 @@ GEM
       rb-inotify (~> 0.9, >= 0.9.10)
     mercenary (0.3.6)
     mini_portile2 (2.6.1)
-    minima (2.5.1)
-      jekyll (>= 3.5, < 5.0)
-      jekyll-feed (~> 0.9)
-      jekyll-seo-tag (~> 2.1)
     minitest (5.14.4)
     multipart-post (2.1.1)
     nokogiri (1.12.4)
@@ -276,8 +279,7 @@ PLATFORMS
 DEPENDENCIES
   github-pages (~> 219)
   jekyll-feed (~> 0.6)
-  jekyll-simple-dark
-  minima (~> 2.0)
+  minima!
   tzinfo (~> 1.2)
   tzinfo-data
   wdm (~> 0.1.0)
