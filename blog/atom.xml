@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://korban.dev/blog</id>
+    <title>korban.dev Blog</title>
+    <updated>2021-04-29T00:00:00.000Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://korban.dev/blog"/>
+    <subtitle>korban.dev Blog</subtitle>
+    <icon>https://korban.dev/img/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[TASTY way of (re)writing macros in Scala 3]]></title>
+        <id>TASTY-way-of-rewriting-macros-in-Scala-3</id>
+        <link href="https://korban.dev/blog/TASTY-way-of-rewriting-macros-in-Scala-3"/>
+        <updated>2021-04-29T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[https://medium.com/virtuslab/tasty-way-of-re-writing-macros-in-scala-3-3ce704a2c37c]]></summary>
+        <content type="html"><![CDATA[<p><a href="https://medium.com/virtuslab/tasty-way-of-re-writing-macros-in-scala-3-3ce704a2c37c">https://medium.com/virtuslab/tasty-way-of-re-writing-macros-in-scala-3-3ce704a2c37c</a></p>]]></content>
+        <author>
+            <name>Kacper Korban</name>
+            <uri>https://github.com/KacperFKorban</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to write Hoogle for Kotlin in Scala (and Scala.js)]]></title>
+        <id>How-to-write-Hoogle-for-Kotlin-in-Scala-and-Scala-js</id>
+        <link href="https://korban.dev/blog/How-to-write-Hoogle-for-Kotlin-in-Scala-and-Scala-js"/>
+        <updated>2021-01-14T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[https://medium.com/virtuslab/how-to-write-hoogle-for-kotlin-in-scala-and-scala-js-8c98c1c303ff]]></summary>
+        <content type="html"><![CDATA[<p><a href="https://medium.com/virtuslab/how-to-write-hoogle-for-kotlin-in-scala-and-scala-js-8c98c1c303ff">https://medium.com/virtuslab/how-to-write-hoogle-for-kotlin-in-scala-and-scala-js-8c98c1c303ff</a></p>]]></content>
+        <author>
+            <name>Kacper Korban</name>
+            <uri>https://github.com/KacperFKorban</uri>
+        </author>
+        <author>
+            <name>Andrzej Ratajczak</name>
+            <uri>https://github.com/BarkingBad</uri>
+        </author>
+    </entry>
+</feed>

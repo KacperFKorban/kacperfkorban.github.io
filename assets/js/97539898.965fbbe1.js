@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkkacperfkorban_github_io=self.webpackChunkkacperfkorban_github_io||[]).push([[320],{9544:function(a){a.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"/blog/tags/kotlin","name":"kotlin","count":1,"permalink":"/blog/tags/kotlin"}')}}]);
