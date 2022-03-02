@@ -4,9 +4,17 @@
         <title>korban.dev Blog</title>
         <link>https://korban.dev/blog</link>
         <description>korban.dev Blog</description>
-        <lastBuildDate>Thu, 29 Apr 2021 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 14 Feb 2022 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[Achieving Indisputable Job Security Using Novel Scala 3 Features: A Case Study]]></title>
+            <link>https://korban.dev/blog/Achieving-Indisputable-Job-Security-Using-Novel-Scala-3-Features-A-Case-Study</link>
+            <guid>Achieving-Indisputable-Job-Security-Using-Novel-Scala-3-Features-A-Case-Study</guid>
+            <pubDate>Mon, 14 Feb 2022 00:00:00 GMT</pubDate>
+            <description><![CDATA[https://medium.com/p/65180eab810a]]></description>
+            <content:encoded><![CDATA[<p><a href="https://medium.com/p/65180eab810a">https://medium.com/p/65180eab810a</a></p>]]></content:encoded>
+        </item>
         <item>
             <title><![CDATA[TASTY way of (re)writing macros in Scala 3]]></title>
             <link>https://korban.dev/blog/TASTY-way-of-rewriting-macros-in-Scala-3</link>
