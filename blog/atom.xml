@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://korban.dev/blog</id>
+    <id>https://kacperfkorban.github.io/blog</id>
     <title>korban.dev Blog</title>
     <updated>2022-02-14T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://korban.dev/blog"/>
+    <link rel="alternate" href="https://kacperfkorban.github.io/blog"/>
     <subtitle>korban.dev Blog</subtitle>
-    <icon>https://korban.dev/img/favicon.ico</icon>
+    <icon>https://kacperfkorban.github.io/img/favicon.ico</icon>
     <entry>
         <title type="html"><![CDATA[Achieving Indisputable Job Security Using Novel Scala 3 Features: A Case Study]]></title>
         <id>Achieving-Indisputable-Job-Security-Using-Novel-Scala-3-Features-A-Case-Study</id>
-        <link href="https://korban.dev/blog/Achieving-Indisputable-Job-Security-Using-Novel-Scala-3-Features-A-Case-Study"/>
+        <link href="https://kacperfkorban.github.io/blog/Achieving-Indisputable-Job-Security-Using-Novel-Scala-3-Features-A-Case-Study"/>
         <updated>2022-02-14T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[https://medium.com/p/65180eab810a]]></summary>
         <content type="html"><![CDATA[<p><a href="https://medium.com/p/65180eab810a">https://medium.com/p/65180eab810a</a></p>]]></content>
@@ -22,7 +22,7 @@
     <entry>
         <title type="html"><![CDATA[TASTY way of (re)writing macros in Scala 3]]></title>
         <id>TASTY-way-of-rewriting-macros-in-Scala-3</id>
-        <link href="https://korban.dev/blog/TASTY-way-of-rewriting-macros-in-Scala-3"/>
+        <link href="https://kacperfkorban.github.io/blog/TASTY-way-of-rewriting-macros-in-Scala-3"/>
         <updated>2021-04-29T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[https://medium.com/virtuslab/tasty-way-of-re-writing-macros-in-scala-3-3ce704a2c37c]]></summary>
         <content type="html"><![CDATA[<p><a href="https://medium.com/virtuslab/tasty-way-of-re-writing-macros-in-scala-3-3ce704a2c37c">https://medium.com/virtuslab/tasty-way-of-re-writing-macros-in-scala-3-3ce704a2c37c</a></p>]]></content>
@@ -34,7 +34,7 @@
     <entry>
         <title type="html"><![CDATA[How to write Hoogle for Kotlin in Scala (and Scala.js)]]></title>
         <id>How-to-write-Hoogle-for-Kotlin-in-Scala-and-Scala-js</id>
-        <link href="https://korban.dev/blog/How-to-write-Hoogle-for-Kotlin-in-Scala-and-Scala-js"/>
+        <link href="https://kacperfkorban.github.io/blog/How-to-write-Hoogle-for-Kotlin-in-Scala-and-Scala-js"/>
         <updated>2021-01-14T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[https://medium.com/virtuslab/how-to-write-hoogle-for-kotlin-in-scala-and-scala-js-8c98c1c303ff]]></summary>
         <content type="html"><![CDATA[<p><a href="https://medium.com/virtuslab/how-to-write-hoogle-for-kotlin-in-scala-and-scala-js-8c98c1c303ff">https://medium.com/virtuslab/how-to-write-hoogle-for-kotlin-in-scala-and-scala-js-8c98c1c303ff</a></p>]]></content>

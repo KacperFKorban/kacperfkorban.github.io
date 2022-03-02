@@ -2,14 +2,14 @@
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>
         <title>korban.dev Blog</title>
-        <link>https://korban.dev/blog</link>
+        <link>https://kacperfkorban.github.io/blog</link>
         <description>korban.dev Blog</description>
         <lastBuildDate>Mon, 14 Feb 2022 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <item>
             <title><![CDATA[Achieving Indisputable Job Security Using Novel Scala 3 Features: A Case Study]]></title>
-            <link>https://korban.dev/blog/Achieving-Indisputable-Job-Security-Using-Novel-Scala-3-Features-A-Case-Study</link>
+            <link>https://kacperfkorban.github.io/blog/Achieving-Indisputable-Job-Security-Using-Novel-Scala-3-Features-A-Case-Study</link>
             <guid>Achieving-Indisputable-Job-Security-Using-Novel-Scala-3-Features-A-Case-Study</guid>
             <pubDate>Mon, 14 Feb 2022 00:00:00 GMT</pubDate>
             <description><![CDATA[https://medium.com/p/65180eab810a]]></description>
@@ -17,7 +17,7 @@
         </item>
         <item>
             <title><![CDATA[TASTY way of (re)writing macros in Scala 3]]></title>
-            <link>https://korban.dev/blog/TASTY-way-of-rewriting-macros-in-Scala-3</link>
+            <link>https://kacperfkorban.github.io/blog/TASTY-way-of-rewriting-macros-in-Scala-3</link>
             <guid>TASTY-way-of-rewriting-macros-in-Scala-3</guid>
             <pubDate>Thu, 29 Apr 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[https://medium.com/virtuslab/tasty-way-of-re-writing-macros-in-scala-3-3ce704a2c37c]]></description>
@@ -25,7 +25,7 @@
         </item>
         <item>
             <title><![CDATA[How to write Hoogle for Kotlin in Scala (and Scala.js)]]></title>
-            <link>https://korban.dev/blog/How-to-write-Hoogle-for-Kotlin-in-Scala-and-Scala-js</link>
+            <link>https://kacperfkorban.github.io/blog/How-to-write-Hoogle-for-Kotlin-in-Scala-and-Scala-js</link>
             <guid>How-to-write-Hoogle-for-Kotlin-in-Scala-and-Scala-js</guid>
             <pubDate>Thu, 14 Jan 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[https://medium.com/virtuslab/how-to-write-hoogle-for-kotlin-in-scala-and-scala-js-8c98c1c303ff]]></description>
