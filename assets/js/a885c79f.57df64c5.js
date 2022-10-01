@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkkacperfkorban_github_io=self.webpackChunkkacperfkorban_github_io||[]).push([[43],{8815:function(a){a.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"/blog/tags/scala-3","name":"scala 3","count":2,"permalink":"/blog/tags/scala-3"}')}}]);

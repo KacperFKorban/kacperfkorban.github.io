@@ -4,32 +4,374 @@
         <title>korban.dev Blog</title>
         <link>https://kacperfkorban.github.io/blog</link>
         <description>korban.dev Blog</description>
-        <lastBuildDate>Mon, 14 Feb 2022 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 06 Jun 2022 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[Data Modeling in Scala 3, but I only use types]]></title>
+            <link>https://kacperfkorban.github.io/blog/Data Modeling in Scala 3, but I only use types</link>
+            <guid>Data Modeling in Scala 3, but I only use types</guid>
+            <pubDate>Mon, 06 Jun 2022 00:00:00 GMT</pubDate>
+            <description><![CDATA[That’s the whole idea.]]></description>
+            <content:encoded><![CDATA[<p>That’s the whole idea.</p><p>We want to model data in Scala, but instead of using instances of classes at the term level, we want to use their type-constructors at the type level.</p><h2>Recruitment system</h2><p>Let’s pick an example to help us visualize the whole process better, because just like a wise person once said “A picture is worth a thousand words”.</p><p>We will represent candidate profiles in a recruitment process for software engineering companies. Let’s start with the term model code and I’ll walk you through it.</p><pre><code class="language-scala">case class Candidate(
+  name: String,
+  experience: List[Experience],
+  otherQualities: List[String]
+)
+
+case class Experience(
+  duration: Int,
+  expLevel: ExpLevel,
+  company: String,
+  technologies: List[String]
+)
+
+enum ExpLevel:
+  case Junior
+  case Regular
+  case Senior
+  case CEO
+export ExpLevel.*
+</code></pre><p>We can represent candidates by providing their:</p><ul><li>name – just a String</li><li>experience history – list of Experience entries</li><li>other qualities – list of string</li></ul><p>And experience entry is represented by:</p><ul><li>duration – number of months at the job</li><li>experience level – enum value representing experience levels in IT</li><li>company name – a String</li><li>technologies – list of technologies used</li></ul><p>So if we were to create a very simplified profile using our model, it will look like this.</p><pre><code class="language-scala">val candidate = Candidate(
+  &quot;John Paul&quot;,
+  Experience(
+    29,
+    Junior,
+    &quot;VirtusLab&quot;,
+   &quot;Scala&quot; :: Nil
+  ) :: Nil,
+  &quot;Motivated&quot; :: Nil
+)
+</code></pre><p>Cool, nothing new so far.</p><h2>Making it spicier</h2><p>That was some basic Scala. Now what we want to do: is to be able to have all this information on the type level.</p><p>You might be asking: We already declared a model in the previous section. Can’t we just use that one?
+As expected, the answer is: No. That’s because Scala distinguishes terms from types. The previous model worked on the term level, and we want to do it on the type level. So, we will have to tweak it a bit.</p><p>To make our intentions 100% clear, we want to be able to declare a type like the following (or at least similar).</p><pre><code class="language-scala">type candidate = Candidate[
+  &quot;John Paul&quot;,
+  Experience[
+    29,
+    Junior,
+    &quot;VirtusLab&quot;,
+    &quot;Scala&quot; :: Nil
+  ] :: Nil,
+  &quot;Motivated&quot; :: Nil
+]
+</code></pre><p>Let’s start our work with the most basic class and work our way up the dependency graph.</p><h3>Experience level</h3><p>First, let’s look at <strong>ExpLevel</strong>. We declared it before as</p><pre><code class="language-scala">enum ExpLevel:
+  case Junior
+  case Regular
+  case Senior
+  case CEO
+export ExpLevel.*
+</code></pre><p>When we think about it, its type constructors carry the same amount of information as its data constructors, so we could leave it as it is.
+There is a small problem with the current declaration though. When we want to access the type of <code>Junior</code> and use it as e.g. a type parameter for <code>List</code>, we cannot just say <code>List[Junior]</code>. That’s because there is no such type constructor as <code>Junior</code>. Instead, we will have to type <code>List[Junior.type]</code>. This can be quite annoying, specifically when it’s a part of the interface exposed to the user.
+Is there a way to fix it then? Yes, and it’s actually quite simple. Just like by writing in Python I can force myself into a crippling depression, you can force Scala to generate classes for all our cases by just adding parentheses after the constructors. Then, those won’t just be values, but classes with empty constructors.</p><pre><code class="language-scala">enum ExpLevel:
+  case Junior()
+  case Regular()
+  case Senior()
+  case CEO()
+export ExpLevel.*
+</code></pre><p>Nice, on to the next one.</p><h3>Experience</h3><p>Now that we fixed the <code>ExpLevel</code> data type, let’s move on to Experience. In the term model, it looked like this</p><pre><code class="language-scala">case class Experience(
+  duration: Int,
+  expLevel: ExpLevel,
+  company: String,
+  technologies: List[String]
+)
+</code></pre><p>We want all of those term parameters to become type parameters, so let’s try just adding them.
+The strategy will be, for every term parameter we will:</p><ol><li>create a type parameter with the same name</li><li>add a type constraint for it using &lt;: operator</li></ol><p>It is important that we use &lt;: here and not :. That is because, when used on types, the first one is semantically equivalent to “is subtype of” and the latter means “has implicit instance of”.
+Let’s take a look at the result of our transformation then.</p><pre><code class="language-scala">case class Experience[
+  duration &lt;: Int,
+  expLevel &lt;: ExpLevel,
+  company &lt;: String,
+  technologies &lt;: List[String]
+]()
+</code></pre><p>At first glance, it looks ok and it looks very similar to the term model. We have an entry for every parameter and the constraints are the same as before. But does it work? Well, no. If I were to play the role of a build tool, I would say that we have one warning and one error.</p><p>Let’s start with the warning. Take a look at this class and think, what does the <code>case</code> keyword give us here. Well, it gives us the <code>apply</code> function to our empty constructor, <code>getters</code> to our non-existent fields, the <code>unapply</code> function for a class we will never construct, and some other extremely useful methods.
+Do you get the point? The <code>case</code> keyword here is just as useful as a cats-effect expert at Ziverge.</p><p>Cool. On to the error now. This one might not be as easy to spot. To make it easier, let’s look at how List is implemented. Skipping a lot of details, we have:</p><pre><code class="language-scala">sealed abstract class List[+A]
+final case class :: [+A](head: A, next: List[A]) extends List[A]
+case object Nil extends List[Nothing]
+</code></pre><p>We have a supertype <code>List</code> and two type constructors <code>::</code> (cons) and <code>Nil</code>.
+<code>Nil</code>, carries no information since it just symbolizes an empty list. No problem here.
+But, when we take a look at <code>::</code>, it only has one type parameter. This would mean that it will only be able to carry the definition of one <code>String</code>.</p><p>Let’s create our own data structure then. To make it easier, it should only contain <code>String</code>s.</p><pre><code class="language-scala">sealed trait StrList
+class Nl extends StrList
+class :|:[head &lt;: String, tail &lt;: StrList] extends StrList
+</code></pre><p>Voila. We just take a look at the definition of List and move every term parameter to type-level, like before.</p><p>If we put all the parts together, we get.</p><pre><code class="language-scala">class Experience[
+  duration &lt;: Int,
+  expLevel &lt;: ExpLevel,
+  company &lt;: String,
+  technologies &lt;: StrList
+]
+</code></pre><h3>Candidate</h3><p>Let’s take a look at our last class – <code>Candidate</code>.</p><pre><code class="language-scala">case class Candidate(
+  name: String,
+  experience: List[Experience],
+  otherQualities: List[String]
+)
+</code></pre><p>Right off the bat, we can spot similar problems as with <code>Experience</code> – Lists. Fortunately, we already have a structure for type-level lists of Strings from before. This means that we just need lists of <code>Experience</code>s. We can declare it in a similar way as with lists of strings, right? Let’s try.</p><pre><code class="language-scala">sealed trait Experiences
+class Empty extends Experiences
+class :+:[head &lt;: ???, tail &lt;: Experiences] extends Experiences
+</code></pre><p>Ok. This looks exactly like the <code>StrList</code> with some minor name changes. Why is there a question mark instead of the constraint of head? That’s because we cannot use <code>Experience</code> there. <code>Experience</code> is a type constructor that takes a non-empty parameter list. We would have to specify it on the spot.</p><p>Is there some trick we can use here? Or is Scala’s type system not expressive enough?
+Of course, there is a workaround. It is also quite a common pattern. It’s every functional programmer’s biggest nightmare and every object-oriented programmer’s wet dream: <code>Inheritance</code>.</p><p>If we add a supertype to our <code>Experience</code> class, we can use it in every place where we would usually use a type and treat <code>Experience</code> as the implementation.</p><pre><code class="language-scala">sealed trait Exp
+class Experience[
+  ...
+] extends Exp
+</code></pre><p>Is this solution pretty? No.
+But as the tapeworm said: There was no other way.</p><p>Now that we have fixed this issue, there is nothing interesting anymore with transforming the <code>Candidate</code> class.</p><pre><code class="language-scala">class Candidate[
+  name &lt;: String,
+  experience &lt;: Experiences,
+  otherQualities &lt;: StrList
+]
+</code></pre><h2>Final form</h2><p>After all that work we can finally write our correct example instance.</p><pre><code class="language-scala">type mystery = Candidate[
+  &quot;John Paul&quot;,
+  Experience[
+    29,
+    Junior,
+    &quot;VirtusLab&quot;,
+    &quot;Scala&quot; :|: Nl
+  ] :+: Empty,
+  &quot;Motivated&quot; :|: Nl
+]
+</code></pre><p>And it compiles, which means that it works!</p><h2>C&#x27;mon, Do Something</h2><p>Now, you’re probably thinking: “Cool, we can model data now but there is more to computer systems than just data.” There is always some domain logic that needs to be implemented. In our case, we should definitely add some sanity checks. Like removing any experience in Rust and adding a “Good sense of humor” quality instead.</p><p>Can we do that? Yes, but since this blog post is already longer than the documentation for <code>http4s</code> I will have to end it here and if this blog post gets enough views, I will write a part II.</p><p>I hope the content was at least mildly interesting and that you didn’t take anything I wrote seriously. Especially type-level programming.</p><p>Medium link: <a href="https://medium.com/virtuslab/data-modeling-in-scala-3-but-i-only-use-types-b6f11ead4c28">https://medium.com/virtuslab/data-modeling-in-scala-3-but-i-only-use-types-b6f11ead4c28</a></p>]]></content:encoded>
+        </item>
         <item>
             <title><![CDATA[Achieving Indisputable Job Security Using Novel Scala 3 Features: A Case Study]]></title>
             <link>https://kacperfkorban.github.io/blog/Achieving-Indisputable-Job-Security-Using-Novel-Scala-3-Features-A-Case-Study</link>
             <guid>Achieving-Indisputable-Job-Security-Using-Novel-Scala-3-Features-A-Case-Study</guid>
             <pubDate>Mon, 14 Feb 2022 00:00:00 GMT</pubDate>
-            <description><![CDATA[https://medium.com/p/65180eab810a]]></description>
-            <content:encoded><![CDATA[<p><a href="https://medium.com/p/65180eab810a">https://medium.com/p/65180eab810a</a></p>]]></content:encoded>
+            <description><![CDATA[Disclaimer]]></description>
+            <content:encoded><![CDATA[<h2>Disclaimer</h2><p>Most of the article is to be perceived as a joke or satire.
+The post is intended as a light read. If you manage to get any educational value from it, you will most likely also enjoy reading the ingredients list of 2% milk.
+Enjoy!</p><h1>Intro</h1><p>We computer programmers frequently state that we code because it is our passion, or because we enjoy building things, or for some other fanciful reason. At the end of the day, though, all Software Engineers write code to make money. This has been on my mind quite a bit lately. So I did some market research and analysis, and after crunching all the figures, I put my findings into this graphic.</p><p><img src="../static/img/job_security_scala/image2.png"/></p><p>There it is plain and simple. You can clearly see that having a job has a huge impact on the amount of money you make. This is where Scala 3 comes in. We will employ Scala 3 to ensure complete job security. How are we going to do that? It’s easy! By making the code impossible to read. If no one else can maintain, let alone read, our code, we will never get fired!
+In this article, I will use the most straightforward programming problems like “Hello World” or “isPrime” to demonstrate how you can master this essential skill.</p><h3>Running the examples</h3><p>This might be a good time to say that since all the snippets in this blog post are GitHub Gists, you can run them using <a href="https://scala-cli.virtuslab.org/">scala-cli</a> easily, using the command below.</p><pre><code class="language-scala">&gt; scala-cli run gist-url
+</code></pre><h2>Hello World</h2><p>Ok, let’s start with the best-known coding “problem” i.e. “Hello World”. In Scala 3, the solution to this problem usually looks like this:</p><pre><code class="language-scala">@main
+def main =
+  println(&quot;Hello World&quot;)
+</code></pre><h3>The good stuff</h3><p>How do we make this simple code unreadable? Well, instead of writing the code explicitly, we can generate the code that prints the output? Sounds promising! After all, generating code isn&#x27;t easy, right?</p><pre><code class="language-scala">import scala.quoted.*
+
+inline def helloWorld =
+  ${ helloWorldImpl }
+
+def helloWorldImpl(using Quotes): Expr[Unit] =
+  &#x27;{ println(&quot;Hello World&quot;) }
+</code></pre><p>Well, it turns out that it’s really straightforward. We just add an inline method that calls an actual implementation. And the actual implementation is the quoted code from our previous solution.</p><h3>Abstract tree</h3><p>We&#x27;ve hit a minor obstacle. How can we get around it?
+The biggest problem with our implementation is that what was generated is very obvious as we just quoted our code and spliced it.
+How about we disallow quoted blocks then? That way, the generated code will be way more obscure.
+Exactly what do we need to do here? First, we need to return something that is of type <code>Expr[Unit]</code> and is semantically equivalent to <code>{ println(&quot;Hello World&quot;) }</code>.
+The main ways to construct <code>Expr</code> are using helper functions in its companion object or creating an (Abstract syntax) <code>Tree</code> and converting it to an <code>Expr</code>.</p><p>Yeah, right, <code>Expr&#x27;s and </code>Tree&#x27;s, we don&#x27;t really care about the semantics. We know that our expression should be the same as quoted <code>println(&quot;Hello World&quot;)</code>. So, let&#x27;s do what software developers usually do: put a bunch of `println&#x27;s in random places and hope for the best.</p><pre><code class="language-scala">def helloWorldImpl(using Quotes): Expr[Unit] =
+  println(&#x27;{ println(&quot;Hello World&quot;) }.asTerm)
+  &#x27;{ () }
+</code></pre><p>After running it, at compile time we get:</p><pre><code class="language-scala">Inlined(Ident(helloworldMacro$package$),List(),Apply(Ident(println),List(Literal(Constant(Hello World)))))
+</code></pre><p>We can ignore the <code>Inlined</code> because it means that the term we got was an inlined expression. The exciting part is:</p><pre><code class="language-scala">Apply(Ident(println),List(Literal(Constant(Hello World))))
+</code></pre><p>So it’s an <code>Apply</code> which is a function application of <code>Ident(println)</code> to <code>List(Literal(Constant(Hello World)))</code>. Great, let’s try recreating it using Quotes API. So, let’s construct an <code>Apply</code>, along with ‘Something’ as the first argument and a list containing a string literal as the second:</p><pre><code class="language-scala">private def helloWorldImpl(using Quotes): Expr[Unit] =
+  import quotes.reflect.*
+
+  val tree = Apply(???, List(Literal(StringConstant(&quot;Hello World&quot;))))
+
+  tree.asExprOf[Unit]
+</code></pre><p>It&#x27;s a good start, but what about the <code>???</code>? Well… it has to be the reference of <code>println</code> and from the definition of <code>ApplyModule.apply</code>, it has to be a <code>Term</code>. From this, we can imply that what we are looking for is most likely <code>Ref</code>, which requires a Symbol.</p><p>The Symbol object has methods with a naming pattern beginning with <code>required</code>, for example: <code>requiredClass</code>, <code>requiredMethod</code>, <code>requiredModule</code>, <code>requiredPackage</code> and so on. Those methods let us &#x27;summon&#x27; symbols of a specific type defined in the compilation unit or on the classpath. Seems great since we want a static method, right? Let&#x27;s try.</p><pre><code class="language-scala">private def helloWorldImpl(using Quotes): Expr[Unit] =
+  import quotes.reflect.*
+
+  val prntln: Ref =
+    Symbol.requiredMethod(&quot;scala.Predef.println&quot;).pipe(Ref(_))
+
+  val tree = Apply(prntln, List(Literal(StringConstant(&quot;Hello world&quot;))))
+
+  tree.asExprOf[Unit]
+</code></pre><p>Note: We use <code>pipe</code> here, a function from <code>scala.util.chaining</code>. Although the actual implementation is slightly different, it can be thought of like so:</p><pre><code class="language-scala">extension [A](a: A)
+  def pipe[B](f: A =&gt; B): B = f(a)
+</code></pre><p>If you see a similarity with <code>|</code> bash, then you’re absolutely right. That’s one of the inspirations for it. And If you see a resemblance with <code>$</code> or <code>&amp;</code> from Haskell, then you should go out more often.</p><p>Right, we can now run it.</p><pre><code class="language-scala">[error] ./main.scala:31:3: Exception occurred while executing macro expansion.
+[error] dotty.tools.dotc.core.TypeError: Failure to disambiguate overloaded reference with
+[error]   method println in object Predef: (x: Any): Unit  and
+[error]   method println in object Predef: (): Unit
+[error]     at dotty.tools.dotc.core.Denotations$MultiDenotation.suchThat(Denotations.scala:1244)
+[error]     at dotty.tools.dotc.core.Denotations$Denotation.requiredSymbol(Denotations.scala:297)
+[error]     at dotty.tools.dotc.core.Symbols$.requiredMethod(Symbols.scala:908)
+[error]     at scala.quoted.runtime.impl.QuotesImpl$reflect$Symbol$.requiredMethod(QuotesImpl.scala:2450)
+[error]     at scala.quoted.runtime.impl.QuotesImpl$reflect$Symbol$.requiredMethod(QuotesImpl.scala:2450)
+[error]     at tmp.tmp$package$.helloWorldImpl(tmp.scala:12)
+[error]     at tmp.tmp$package$.inline$helloWorldImpl(tmp.scala:9)
+</code></pre><p>Cool, we got some good old-fashioned compiler error, with many references to compiler internals in the stack trace. That’s what we wanted to see.
+Well, except that after skipping the first line, the message is actually pretty reasonable. There simply are two functions named <code>println</code> at this path. And the scaladoc confirms it:</p><p><img src="../static/img/job_security_scala/image1.png"/></p><p>That means that we cannot solve the problem that easily. But that’s good. The more code, the less readable it becomes. If we cannot access the method itself, let’s access the owner first and get the method from the list of its members. The way we do that is:</p><pre><code class="language-scala">Symbol.required(&quot;scala.Predef&quot;)
+</code></pre><p>Get its member methods named ‘println’...</p><pre><code class="language-scala">  .memberMethod(&quot;println&quot;)
+</code></pre><p>Then filter out the methods with no arguments…</p><pre><code class="language-scala">  .flatMap { m =&gt;
+    m.tree match
+      case defdef: DefDef
+        if !defdef.paramss.flatMap(_.params).isEmpty =&gt; Some(m)
+      case _ =&gt; None
+  }
+</code></pre><p>And finally, just take the <code>head</code> of the list and wrap it in <code>Ref</code>...</p><pre><code class="language-scala">  .head.pipe(Ref(_))
+</code></pre><p>Cool. So, after composing it into our previous template, we get:</p><pre><code class="language-scala">private def helloWorldImpl(using Quotes): Expr[Unit] =
+  import quotes.reflect.*
+
+  val prntln = Symbol.requiredPackage(&quot;scala.Predef&quot;)
+    .memberMethod(&quot;println&quot;)
+    .flatMap { m =&gt;
+      m.tree match
+        case defdef: DefDef
+          if !defdef.paramss.flatMap(_.params).isEmpty =&gt; Some(m)
+        case _ =&gt; None
+    }.head.pipe(Ref(_))
+
+  val tree = Apply(prntln, List(Literal(StringConstant(&quot;Hello world&quot;))))
+
+  tree.asExprOf[Unit]
+</code></pre><p>And testing it gives us…</p><pre><code>&gt; scala-cli run ...
+Hello World
+</code></pre><p>Great! And just like that, we were able to utilize metaprogramming to write confusing and unmaintainable code.</p><h2>Not so simple algebra</h2><p>Since we&#x27;ve already done quite a few Hello-Worlds. Let&#x27;s change things up a bit now. Several well-known problems are usually used to learn recursion, e.g. the Fibonacci sequence, factorial, greatest common divisor, is prime, etc. Let&#x27;s pick one at random; let&#x27;s choose is prime.</p><p>Now you may start asking yourself: &quot;How can I really be sure that it&#x27;s actually at random?&quot;.
+And my answer to you would be: &quot;My blog post, my rules. So if I say that it&#x27;s random, then it&#x27;s random, ok?&quot;</p><h3>Vanilla</h3><p>Let’s implement the standard version as a warm-up.</p><pre><code class="language-scala">def isPrimeCheat(a: Int): Boolean =
+  2.until(a).forall(a % _ != 0)
+</code></pre><p>Looks okay, right? RIGHT?! Of course not. I mean… it correctly checks if a number is prime, I’ll give you that. But we said that it’s an exercise for recursion. And do you see any recursion here? Let’s fix it then.</p><pre><code class="language-scala">def isPrime(a: Int, acc: Int = 2): Boolean =
+  if a &lt;= acc then a == acc
+  else a % acc != 0 &amp;&amp; isPrime(a, acc+1)
+</code></pre><p>See? It looks better now.</p><h3>No value calculations</h3><p>Now that the warm-up is over, how do we make this unreadable? How about disallowing the use of values? Sounds great, but can we make it work?
+The answer is obviously yes; we can use types.
+Scala 3 has a pretty impressive type system that can operate on singleton types. We can say that the type of <code>1</code> is <code>1</code> and <code>1</code> is a subtype of <code>Int</code>. Cool right?
+We also know that there is a pretty comprehensive set of type families (functions on type-level) that let us operate on singleton types. This means that we can almost rewrite our standard implementation 1:1. A reasonable attempt will look like this:</p><pre><code class="language-scala">import scala.compiletime.ops.int.*
+
+type IsPrime[A &lt;: Int] = IsPrimeRec[A, 2]
+
+type IsPrimeRec[A &lt;: Int, B &lt;: Int] &lt;: Boolean = A &lt;= B match
+  case true =&gt; A == B
+  case false =&gt; A % B != 0 &amp;&amp; IsPrimeRec[A, S[B]]
+</code></pre><p>First of all, we cannot have default parameters, so we will have to create a proxy function that calls our actual implementation. Then when we look at the actual definition, it is really similar to what we wrote on the value level. The only difference is that we used a match instead of an if statement. And that’s because Scala has match types, but there is no such thing as if-else types.</p><p>You might be thinking now: “Hold on a sec. How are we going to print the result if it’s a type?”.
+First of all: Ok, smarty-pants. And secondly, we can use the function <code>constValue</code> from <code>scala.compiletime</code>, which lets us summon values of a given type if the type has a single decidable inhabitant. Like so:</p><pre><code class="language-scala">import scala.compiletime.*
+
+@main
+def main =
+  println(constValue[IsPrime[13]])
+  println(constValue[IsPrime[12]])
+</code></pre><p>So when we run it, we get:</p><pre><code class="language-scala">&gt; scala-cli run ...
+true
+false
+</code></pre><p>Success!</p><h3>Manual labor</h3><p>What did we learn from our exercise just now? Scala 3 makes type-level programming (at least for chosen types) way too easy. Mainly, that&#x27;s because there are so many util functions. That&#x27;s right, you know what&#x27;s coming. Let’s limit our usage of functions from <code>scala.compiletime.ops.int</code> to just <code>S</code>.
+If you don&#x27;t know what <code>S</code> does, let me explain. It&#x27;s a type-level successor function for integers. So e.g. S<!-- -->[0]<!-- --> = 1, S<!-- -->[1]<!-- --> = 2 and so on.
+And why did we choose <code>S</code> in the first place? That&#x27;s because, together with the literal <code>0</code>, it works just like the definition of an inductive set for natural numbers. And since all of our operations are only required to work on natural numbers, we&#x27;re going to implement them that way, so it&#x27;s undefined behaviour for negative numbers.</p><p>Since the only thing that has to change is the declarations of the helper function, the actual implementation can stay as it was.</p><pre><code class="language-scala">type IsPrimeRec[A &lt;: Int, B &lt;: Int] &lt;: Boolean = A &lt;= B match
+  case true =&gt; A == B
+  case false =&gt; A % B != 0 &amp;&amp; IsPrimeRec[A, S[B]]
+</code></pre><p>What function do we need to implement first? Looks like it’s going to be <code>&lt;=</code>. Since we are implementing it for natural numbers, it seems obvious that the implementation has to follow their inductive definition.</p><pre><code class="language-scala">type &lt;=[A &lt;: Int, B &lt;: Int] &lt;: Boolean = A match
+  case 0 =&gt; true
+  case S[a] =&gt;
+    B match
+      case 0 =&gt; false
+      case S[b] =&gt; a &lt;= b
+</code></pre><p>It&#x27;s pretty simple:</p><ul><li>if <code>A</code> is zero then it is smaller or equal to any natural number</li><li>otherwise <code>A</code> is a successor of any <code>a</code>, so:<ul><li>if <code>B</code> is zero then it cannot be larger or equal than <code>S[a]</code></li><li>otherwise <code>B</code> is a successor of any <code>b</code> and we check if their predecessors satisfy the predicate.</li></ul></li></ul><p>Let&#x27;s do the % next. This one is also pretty simple and looks like this:</p><pre><code class="language-scala">type %[A &lt;: Int, B &lt;: Int] &lt;: Int = A &lt; B match
+  case true =&gt; A
+  case _ =&gt; (A - B) % B
+</code></pre><p>Nothing exciting going on here. If A is smaller than B, just return B; otherwise, return (A-B) % B.</p><p>The rest of the functions are left as an exercise for the reader, but let’s check if it works?</p><pre><code>&gt; scala-cli run ...
+true
+false
+</code></pre><h2>Conclusions</h2><p>So, what did we learn from this article? Mainly that, in Scala 3, even code that&#x27;s meant to be complicated isn&#x27;t actually that bad. And writing unreadable code requires some skill.</p><p>So, why not use some of the languages that are unmaintainable by definition, like Rust or Python?
+In the case of Rust, it is pretty easy: nobody actually uses Rust; people just like talking about using Rust.
+And when it comes to Python, the problem is that every program in Python is unmaintainable, and we wanted to write code that is readable only to us.</p><p>Medium link: <a href="https://medium.com/virtuslab/achieving-indisputable-job-security-using-novel-scala-3-features-a-case-study-65180eab810a">https://medium.com/virtuslab/achieving-indisputable-job-security-using-novel-scala-3-features-a-case-study-65180eab810a</a></p>]]></content:encoded>
         </item>
         <item>
             <title><![CDATA[TASTY way of (re)writing macros in Scala 3]]></title>
             <link>https://kacperfkorban.github.io/blog/TASTY-way-of-rewriting-macros-in-Scala-3</link>
             <guid>TASTY-way-of-rewriting-macros-in-Scala-3</guid>
             <pubDate>Thu, 29 Apr 2021 00:00:00 GMT</pubDate>
-            <description><![CDATA[https://medium.com/virtuslab/tasty-way-of-re-writing-macros-in-scala-3-3ce704a2c37c]]></description>
-            <content:encoded><![CDATA[<p><a href="https://medium.com/virtuslab/tasty-way-of-re-writing-macros-in-scala-3-3ce704a2c37c">https://medium.com/virtuslab/tasty-way-of-re-writing-macros-in-scala-3-3ce704a2c37c</a></p>]]></content:encoded>
+            <description><![CDATA[Intro]]></description>
+            <content:encoded><![CDATA[<h2>Intro</h2><p>If you have decided to read this blog post, you probably used or at least heard of macros. But just to make sure that we are on the same page: Macros / metaprogramming in Scala provide a way to either generate scala code at compile-time or analyze existing code to gather syntactic data.</p><p>Since the interface for writing macros in Scala 3 is completely different from that of Scala 2, macro libraries should become easier to develop and maintain. It also means that macro libraries from Scala 2 can’t be easily migrated or ported and instead have to be rewritten using the new TASTY API.</p><p>The aim of this blog post is to serve as a manual on efficiently using and navigating through Quotes API (which is the core of metaprogramming), rather than being a migration guide for macros or Scala projects in general. So for some preface/further reading macros documentation can be found <a href="https://docs.scala-lang.org/scala3/guides/macros/macros.html">here</a> and the migration guide is <a href="https://scalacenter.github.io/scala-3-migration-guide/">here</a>. There is also quite a powerful tool <a href="https://github.com/scalacenter/scala3-migrate">scala3-migrate</a>, which automated most of the migration work.</p><p>All code snippets as well as the example mini-project were tested on Scala versions 3.0.0-RC1 and 3.0.0-RC2.</p><h2>Problem</h2><p>I strongly believe that the best way to learn is by example. So let’s formulate a problem so that we have something to solve (because that’s how real life works). Let’s create a program that for a class (of kind <em> -&gt; </em>), generates a neat type description for it, so for a case class like this:</p><pre><code class="language-scala">case class NonEmpty[T](e: T, tail: Option[NonEmpty[T]])
+</code></pre><p>we want to generate a string like this:</p><pre><code class="language-scala">&quot;NonEmpty(e: T, tail: Option[NonEmpty[T]])&quot;
+</code></pre><h2>Base</h2><p>Like the title of the article suggests, we are going to be using TASTY reflect. So let’s start by creating an empty object for our code.</p><pre><code class="language-scala">import scala.quoted.*
+
+object TypeInfo {
+ inline def apply[T[_]]: String = ${ typeInfoImpl[T] }
+
+ def typeInfoImpl[T[_]: Type](using Quotes): Expr[String] = {
+   import quotes.reflect.*
+
+   ???
+ }
+}
+</code></pre><p>Let’s take a look at what is going on here. First, we import scala.quoted.* to have access to Type and Quotes. Then we have the apply method. It only takes a single type parameter because our code isn’t supposed to depend on the value, but rather on the given type. The body of apply is just <a href="https://dotty.epfl.ch/docs/reference/metaprogramming/macros.html">spliced</a> value of typeInfoImpl. When it comes to typeInfoImpl declaration, it takes the same type parameter and two implicit arguments:</p><ul><li>qctx (short for Quotes Context) - gives us access to reflect API</li><li>tpe - type information of the type parameter
+while returning a value of type Expr<!-- -->[String]<!-- -->, which after splicing yields a String.</li></ul><h2>Code &lt;3</h2><p>Cool, so now that we have a base, we can start writing actual code. Let’s start with something simple, like just getting the class’s name.</p><p>Our starting point is the tpe value, but in order to get the data we need, we have to transform this Type<!-- -->[T]<!-- --> into something from TASTY reflect. Let’s take a look at the hierarchy in <a href="https://dotty.epfl.ch/api/scala/quoted/Quotes$reflectModule.html">dotty/Quotes.scala</a> then. The important part is this:</p><pre><code class="language-scala">+- TypeRepr -+- NamedType -+- TermRef
+             |             +- TypeRef
+             +- ConstantType
+</code></pre><p>So we know that we need a TypeRepr, but in the <a href="https://github.com/lampepfl/dotty/blob/main/library/src/scala/quoted/Quotes.scala">Quotes</a> file there are no functions that may allow us to do it. That’s because all methods and functions for operating on TASTY types are in <a href="https://github.com/lampepfl/dotty/blob/main/compiler/src/scala/quoted/runtime/impl/QuotesImpl.scala">QuotesImpl.scala</a>. The basic structure in this file is that for every AST node there are three main entries:</p><ul><li>type alias for the internal node type</li><li>companion object, which implements constructor functions like apply, but also methods like unapply and copy</li><li>given with extension methods for our type. The name of this given is always type_name + “Methods”
+So the relevant entries for TyprRepr are:</li></ul><pre><code class="language-scala">type TypeRepr = dotc.core.Types.Type
+
+object TypeRepr extends TypeReprModule:
+ ...
+ def of[T &lt;: AnyKind](using tp: scala.quoted.Type[T]): TypeRepr =
+   tp.asInstanceOf[TypeImpl].typeTree.$tpe
+ ...
+end TypeRepr
+
+given TypeReprMethods: TypeReprMethods with
+ extension (self: TypeRepr)
+   ...
+   def typeSymbol: Symbol = self.typeSymbol
+   ...
+ end extension
+end TypeReprMethods
+</code></pre><p>Great, now we have a TypeRepr. Unfortunately, it doesn’t have any methods that can give us access to the type’s name, to get that information we have to access typeSymbol. After looking through the extension methods in SymbolMethods we can find the method name, which is exactly what we are looking for. Our very much WIP code looks like this:</p><pre><code class="language-scala">val tpe = TypeRepr.of[T]
+val name = tpe.typeSymbol.name
+Expr(name)
+</code></pre><p>Now that we have the basics covered, it’s time to handle value parameters. Once again, we start with tpe of type TypeRepr. We want to access the type declaration, so we have to get typeSymbol. After looking in SymbolMethods for something that can get us case declarations of the class, we can find:</p><pre><code class="language-scala">def caseFields: List[Symbol] = ...
+</code></pre><p>Which does exactly what we want.
+Our description displays the label and type for every parameter. Getting the label is simple because, just like T’s name, we have a Symbol with the name method. Unfortunately, there is no method that can give us the type of a declaration straight from Symbol. That means we have to look into the AST tree, which can be accessed from Symbol with the method tree (who would have thought :D). Ok, so can we deduce what types of AST nodes are our Symbols? Let’s try, by looking at the hierarchy in <a href="https://dotty.epfl.ch/api/scala/quoted/Quotes.html">Quotes</a>. We can intuitively guess that our case declarations are some kinds of declarations :o. Here is the relevant piece then:</p><pre><code class="language-scala">+- Definition --+- ClassDef
+|               +- TypeDef
+|               +- DefDef
+|               +- ValDef
+</code></pre><p>Let’s go through all the options one by one:</p><ul><li>ClassDef is a definition of a class, so it obviously cannot be a case declaration</li><li>TypeDef is a declaration of a type. Type parameters are of type TypeDef, but they aren’t considered case fields</li><li>DefDef is a definition of a method, which can’t be a case field either</li><li>ValDef is a value definition (or variable)- all case fields are of this type
+Based on that, we should match on ValDefs. Let’s take a look at the code we have described so far.</li></ul><pre><code class="language-scala">val caseFields = tpe.typeSymbol.caseFields.map { s =&gt;
+  val name = s.name
+  val tpe = s.tree match {
+    case v: ValDef =&gt;
+      ???
+  }
+  s&quot;$name: $tpe&quot;
+}
+</code></pre><p>Cool, what can we get from our ValDef then? We don’t have much choice here:</p><pre><code class="language-scala">given ValDefMethods: ValDefMethods with
+  extension (self: ValDef)
+    def tpt: TypeTree = self.tpt
+    def rhs: Option[Term] = optional(self.rhs)
+  end extension
+end ValDefMethods
+</code></pre><p>Obviously, we want the TypeTree here and after looking at the TypeTreeMethods, there is only one method- tpe: TypeRepr. TypeRepr has a bunch of possible specific types we will have to look into in a second. But for now, let’s do the same trick as we did in the very beginning to get the class name (.typeSymbol.name). Now our code looks like this:</p><pre><code class="language-scala">val tpe = TypeRepr.of[T]  
+val name = tpe.typeSymbol.name
+
+val caseFields = tpe.typeSymbol.caseFields.map { s =&gt;
+  val name = s.name
+  val tpe = s.tree match {
+    case v: ValDef =&gt;
+      v.tpt.tpe.typeSymbol.name
+  }
+  s&quot;$name: $tpe&quot;
+}
+
+Expr(
+  s&quot;$name(${caseFields.mkString(&quot;,&quot;)})&quot;
+)
+</code></pre><p>And it gives this output:</p><pre><code class="language-scala">&quot;NonEmpty(e: T,tail: Option)&quot;
+</code></pre><p>Looks almost done. The only thing missing are the type parameters of Option. As I mentioned before, TypeRepr has many specific node types. So let’s take a look at some of them:</p><pre><code class="language-scala">+- TypeRepr -+- NamedType -+- TermRef
+            |              +- TypeRef
+            +- AppliedType
+            +- AndOrType -+- AndType
+            |             +- OrType
+            ...
+</code></pre><p>There are more of them, so in a real-life scenario, we would have to handle all of them. But my example, my rules. Most of those types are structurally recursive, so will delegate our type extraction logic to a function. For every AST node type we can look for desired methods just like before. For NamedType there is a method name, for AppliedType we can just use unapply to get the tycon (Type Constructor) and args and so on. The result looks like this:</p><pre><code class="language-scala">def fullTypeName(tpe: TypeRepr): String = tpe match
+     case t: NamedType =&gt;
+       t.name
+     case o: OrType =&gt;
+       fullTypeName(o.left) + &quot; | &quot; + fullTypeName(o.right)
+     case o: AndType =&gt;
+       fullTypeName(o.left) + &quot; &amp; &quot; + fullTypeName(o.right)
+     case AppliedType(base, args) =&gt;
+       fullTypeName(base) + args.map(fullTypeName).mkString(&quot;[&quot;, &quot;,&quot;, &quot;]&quot;)
+</code></pre><p>After using the function call in our main code. The result presents like this:</p><pre><code class="language-scala">&quot;NonEmpty(e: T,tail: Option[NonEmpty[T]])&quot;
+</code></pre><p>Which is exactly what we wanted :D</p><h2>Takeaways</h2><p>The examples shown in this article are intentionally straightforward, just to show the basic process of working with TASTY reflect API. But the main ideas I wanted to show are:</p><ul><li>Look for node types in <a href="https://dotty.epfl.ch/api/scala/quoted/Quotes.html">Quotes</a></li><li>Look for implementation and methods in <a href="https://github.com/lampepfl/dotty/blob/main/compiler/src/scala/quoted/runtime/impl/QuotesImpl.scala">QuotesImpl</a></li><li>Macros in dotty are way easier to write than in Scala 2</li></ul><p>Code for this example is available <a href="https://github.com/KacperFKorban/tasty-macro-migration">here</a>.</p><p>Medium link: <a href="https://medium.com/virtuslab/tasty-way-of-re-writing-macros-in-scala-3-3ce704a2c37c">https://medium.com/virtuslab/tasty-way-of-re-writing-macros-in-scala-3-3ce704a2c37c</a></p>]]></content:encoded>
         </item>
         <item>
             <title><![CDATA[How to write Hoogle for Kotlin in Scala (and Scala.js)]]></title>
             <link>https://kacperfkorban.github.io/blog/How-to-write-Hoogle-for-Kotlin-in-Scala-and-Scala-js</link>
             <guid>How-to-write-Hoogle-for-Kotlin-in-Scala-and-Scala-js</guid>
             <pubDate>Thu, 14 Jan 2021 00:00:00 GMT</pubDate>
-            <description><![CDATA[https://medium.com/virtuslab/how-to-write-hoogle-for-kotlin-in-scala-and-scala-js-8c98c1c303ff]]></description>
-            <content:encoded><![CDATA[<p><a href="https://medium.com/virtuslab/how-to-write-hoogle-for-kotlin-in-scala-and-scala-js-8c98c1c303ff">https://medium.com/virtuslab/how-to-write-hoogle-for-kotlin-in-scala-and-scala-js-8c98c1c303ff</a></p>]]></content:encoded>
+            <description><![CDATA[Motivation]]></description>
+            <content:encoded><![CDATA[<h2>Motivation</h2><p>Programmers tend to use strongly typed languages for the safety in the runtime and their own comfort while developing applications. While using new dependency, they often have to browse the documentation by symbolic names of classes and functions. Oftentimes, they don’t know the function name, but are convinced there must be a function somewhere that fits given type transformation. In this talk, we will focus on a prototype tool that lets you browse the docs using types as search keys in Kotlin. </p><p>Once in a while every developer stumbles upon a code like this:</p><pre><code class="language-kotlin">val list = listOf(&quot;Andrzej&quot;, &quot;Filip&quot;, &quot;Michał&quot;)
+return Pair(
+   list.filter { it.length &lt;= 5 },
+   list.filter { it.length &gt; 5 }
+)
+</code></pre><p>And then a thought comes in. This looks like something people might do a lot. It surely can be done in a shorter, more readable way. So, what do we know that can help us refactor this code? Well in order to replace this <code>Pair(list.filter(...), list.filter(...))</code> we want a function that behaves like this:</p><p><code>&lt;T&gt; List&lt;T&gt;.((T) -&gt; Boolean) -&gt; Pair&lt;List&lt;T&gt;, List&lt;T&gt;&gt;</code></p><p>Ok, that’s great, but we still are pretty much nowhere. And that’s because we need this function’s name to call it.
+How would we conventionally do it? Well, we could use Dokka for stdlib and look through potential functions, but that can take a lot of time. Plus it is way too close to actual work and we (software developers) don’t really like that.
+That’s where Inkuire comes in. Inkuire lets us search a library documentation with function signatures as search keys.</p><p>Oooo, by the way the function we are looking for is <code>partition</code>.</p><p><img src="../static/img/writing_hoogle_for_kotlin/image1.png"/></p><h2>Why Scala for Kotlin tooling?</h2><p>One can wonder: Why are you using Scala for Kotlin tooling? Those are actually two questions framed as one:</p><ul><li>“Why for Kotlin?” - This one is really simple. As software developers we don’t really like doing too much work. In case of gathering Kotlin source data, dokka can do a huge share of work for us. We just need to format the data and persist it. Additionally Kotlin has a way simpler type system than Scala (especially Scala3). Therefore, having Hoogle for Kotlin is like proof of concept for having a similar tool in Scala3 world. </li><li>“Why in Scala?” - The first reason is that Scala is a more mature language. Scala.js has better support and documentation than Kotlin/JS. The other reason is just our personal preference. Scala with the use of Cats and similar libraries allows us to write code in a more functional way and probably everyone can agree, that is the 2020 way to code.</li></ul><h2>Gathering code data</h2><p>First of all, we need a lot of data about code. It’s not plain data from source code but rather complete information about types provided by Kotlin compiler. Therefore we have to analyse sources before we can serialize them. Of course we could use descriptors analysis offered by JetBrains, but there is a more convenient way of doing that thanks to the recently released documentation tool - <a href="https://github.com/Kotlin/dokka">dokka</a>. You can find out more about dokka <a href="https://github.com/Kotlin/dokka">here</a>, but what you have to know is its powerful pluggability abilities that enable you to have all required data about Kotlin and Java sources enclosed in a very simple and intuitive API.
+If you would like to use dokka to analyse your own sources, check out this <a href="https://medium.com/virtuslab/analyzing-kotlin-sources-just-got-simpler-48aa88e0cf0b">great article</a> by Marcin Aman. </p><h2>Actual search</h2><p>Once we have the data, it’s time to use it to find our mystery function. The first thing we have to worry about is how to tell the engine what we want, in other words: what should be the format of the query. After reading the title and motivation, it shouldn’t come as a surprise, that we want to search for a function with a specific <strong>signature</strong>, so our input is just going to be a Kotlin signature.</p><p>The first step in processing an input string is parsing the given text with a grammar that recognises Kotlin function signatures and then map it to our model. Ironically, searching through scala-parser-combinators with signatures as search keys would be really helpful, since the most commonly used functions from this library are: <code>^^</code>, <code>~</code>, <code>~&gt;</code>, <code>|</code>, <code>&lt;~</code>, <code>^^^</code>. All those seem pretty self explanatory, so I won’t go into much detail about the parser itself. But if you’d like to learn more about using scala-parser-combinators the <a href="https://github.com/scala/scala-parser-combinators/blob/main/docs/Getting_Started.md">getting started</a> page is a nice starting point.</p><p>After parsing, we have our signature mapped into a more approachable form. So let’s look at our application from the user&#x27;s perspective. If I input a signature, let’s say something like <code>String.(Int) -&gt; Any</code>. What functions do I want to see as the result? In other words what should be the relation between our input signature and the result signatures? Well, the easiest and most intuitive relation would be substitution. So for the given signature anything that can be used in its place should be fine. So a function like drop with a signature <code>String.(Int) -&gt; String</code> is a good fit, since it has the same input types and just a more specific return type. But a function like maxOf (<code>Int.(Int) -&gt; Int</code>) doesn’t fit, because clearly the receiver- <code>Int</code> has nothing to do (in terms of subtyping) with the expected receiver <code>String</code>.</p><h2>HTTP Client</h2><p>What would be Inkuire without an easily-accessed, user friendly client? The most intuitive and the simplest to deploy on your own is a RESTful service. Inkuire offers a ready to use JAR container that lets you ship the engine locally or globally without much overhead. Graphic design is not our passion, but we did our best.</p><p><img src="../static/img/writing_hoogle_for_kotlin/image2.gif"/></p><p>You can also try it yourself <a href="https://inkuire.herokuapp.com/query">here</a>.</p><h2>What if we would like to embed the engine into the documentation itself?</h2><p>Imagine that: you configure dokka for your own library. Your code is encouraging to use it functional-programming style, maybe has an ArrowKt as a dependency. You would like to ship your documentation as the HTML pages, but the default search bar in dokka’s default template allows you to search by function names. It would be awesome, if users could browse the documentation using signatures as search keys. We thought the same. So we decided to enable that using Scala.js!</p><h2>Is it even possible?</h2><p>Well, Scala.js always has been a dark horse of Scala. Many Scala developers remain unaware to these days that Scala.js exists. But it does. And has really good support from community libraries. The idea is: you can transpile your Scala code to JavaScript if all your dependencies can or you depend on stdlib. Luckily, many popular libraries guarantee that compatibility.</p><p><img src="../static/img/writing_hoogle_for_kotlin/image3.gif"/></p><p>You can try it yourself <a href="http://inkuire.s3.eu-central-1.amazonaws.com/master/stdlib/latest/kotlin-stdlib/kotlin-stdlib/index.html">here</a>.</p><h2>So how does it work internally?</h2><p>The querying engine is pure. It has just an input signature and an output list of matching functions. Transpilation to JavaScript is as easy as a piece of cake. The JavaScript obtained from Scala code lets you call the matching function the same way you would call it from standard JVM target. The only thing missing is the way to bind function to the DOM search bar. Luckily, Scala.js provides a DOM API, so you can include all the logic in Scala code without writing a single line of JavaScript by yourself. Isn’t it awesome?</p><h2>Why Scala.js and not RESTful service?</h2><p>Why did we decide to transpile the engine code into JavaScript and not use the previously stated RESTful server to delegate calls and present results? Mainly, because we can encapsulate the whole deployment process in one plugin. The user has not to bother with deploying the JAR with the engine. If he could ship docs generated by dokka, he is able to ship them with our plugin attached. This approach also removed the problem with having to update the data for the server with every release. The database is built with documentation, so it will always be in sync with it. The cost of adding the plugin to dokka isn’t that big (memory wise), the JavaScript code itself has only a few MB and e.g. the JVM part of stdlib has 15MB.</p><h2>Runtime efficiency test of JS and JVM</h2><p>Is it worth using an engine running in your browser instead of a dedicated JVM? Let’s see.
+The criteria of the test are: time of engine processing and overall time for the user since he typed the signature till received results. The JVM tests have been conducted using Apache JMeter and JS with Selenium (Chrome runner). The table below shows results:</p><table><thead><tr><th>Platform</th><th>Avg engine processing time</th><th>Std engine processing time</th><th>Avg ovberall time</th><th>Std overall time</th></tr></thead><tbody><tr><td>JVM</td><td>330.26 ms</td><td>26.64 ms</td><td>332 ms</td><td>25.65 ms</td></tr><tr><td>JS</td><td>1165.57 ms</td><td>100.98 ms</td><td>2170.31 ms</td><td>101.43 ms</td></tr></tbody></table><p>As you can see, the JVM version is about 5 times faster than JS one. The additional 1 second in overall time in JS comes from the debounce time of the input field, so we can detect when the user starts typing. One could think, it’s better to use RESTful service, however, the time latency is so relatively small, it is hard to experience inconvenience from waiting for the results, having the advantage of jumping directly to the exact documentation subpage.</p><h2>What if I would like to use it myself?</h2><p>Currently, we do not publish artifacts to remote repositories. If you would like to use Inkuire for your project here source code. Installation guide can be found in <a href="https://github.com/VirtusLab/Inkuire/blob/kotlin/README.md">readme</a>. Note that Inkuire has two main drawbacks. One is not a fully integrated multiplatform - you have to choose arbitrarily which source sets you would like to query from. Also, there is still the problem with getting a full hierarchy tree of types declared in dependencies. The rule of thumb is the same as with Scala.js: To obtain a full hierarchy tree, you must provide types databases from all dependencies. We know that going recursively deeper in the dependencies tree and generating all types databases is a tedious job, but it’s the only solution available right now. However, using a type database only for a given library will cause engine work heuristicly; it will give true and applicable results, though he won’t see all possible substitutions, and you will not be able to use types that you know are higher in the inheritance tree.</p><p>Medium link: <a href="https://medium.com/virtuslab/how-to-write-hoogle-for-kotlin-in-scala-and-scala-js-8c98c1c303ff">https://medium.com/virtuslab/how-to-write-hoogle-for-kotlin-in-scala-and-scala-js-8c98c1c303ff</a></p>]]></content:encoded>
         </item>
     </channel>
 </rss>
