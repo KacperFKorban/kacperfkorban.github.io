@@ -36,15 +36,15 @@ jobs:
         uses: sbt/setup-sbt@v1
 
       - name: Generate documentation
-        run: sbt doc # check this
+        run: sbt doc
 
       - name: Setup Pages
         uses: actions/configure-pages@v2
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: 'avocADO/target/jvm-3/api' # change this
+          path: 'target/scala-3.6.3/api'
 
       - name: Deploy to GitHub Pages
         id: deployment
