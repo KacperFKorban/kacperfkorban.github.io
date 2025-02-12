@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkkacperfkorban_github_io=self.webpackChunkkacperfkorban_github_io||[]).push([[930],{1748:function(a){a.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"/blog/tags/scalajs","name":"scalajs","count":1,"permalink":"/blog/tags/scalajs"}')}}]);
