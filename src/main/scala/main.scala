@@ -1,7 +1,7 @@
 /**
   * Some interesting projects, I have worked on.
   */
-object MyProjects:
+object Projects:
   /**
     * Dotty is the Scala 3 compiler. I worked on it both as part of the
     * VirtusLab team and as part of the LAMP/EPFL team.
@@ -23,6 +23,25 @@ object MyProjects:
     * @see [[https://github.com/VirtusLab/AvocADO]]
     */
   class AvocADO
+
+/**
+  * A list of my publications.
+  */
+object Publications:
+  /**
+    * **Verified Inlining and Specialisation for PureCake**
+    *
+    * Inlining is a crucial optimisation when compiling functional programming
+    * languages. This paper describes how we have implemented and verified
+    * function inlining and loop specialisation for PureCake, a verified
+    * compiler for a Haskell-like (purely functional, lazy) programming
+    * language. A novel aspect of our formalisation is that we justify inlining
+    * by pushing and pulling -bindings. All of our work has been mechanised in
+    * the HOL4 interactive theorem prover.
+    * 
+    * @see [[https://scholar.google.com/citations?view_op=view_citation&hl=pl&user=eTmlLwEAAAAJ&citation_for_view=eTmlLwEAAAAJ:d1gkVwhDpl0C]]
+    */
+  class VerifiedInliningandSpecialisationforPureCake
 
 /**
   * Some basic info about me.
