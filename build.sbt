@@ -1,6 +1,6 @@
 lazy val kacperfkorban = project.in(file("."))
   .settings(
-    name := "KacperFKorban",
+    name := "Kacper Korban",
     scalaVersion := "3.6.3",
     Compile / doc / scalacOptions ++= Seq(
       "-siteroot", "docs",
