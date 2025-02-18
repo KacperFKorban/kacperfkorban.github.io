@@ -56,6 +56,9 @@ object AboutMe:
     */
   class Contact
 
+/**
+  * My education history.
+  */
 object Education:
   /**
     * I did my Bachelors in Computer Science at AGH University of Science
