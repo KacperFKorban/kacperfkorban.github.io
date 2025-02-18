@@ -91,6 +91,9 @@ object Education:
     */
   class PhD
 
+/**
+  * My work experience.
+  */
 object WorkExperience:
   /**
     * I worked at VirtusLab as a Scala developer for slightly over 5 years.
