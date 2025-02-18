@@ -55,11 +55,57 @@ object AboutMe:
     * Private e-mail: kacper.f.korban@gmail.com
     */
   class Contact
+
+object Education:
   /**
-    * I am a PhD student at EPFL. (SystemF/LAMP)
+    * I did my Bachelors in Computer Science at AGH University of Science
+    * and Technology in Cracow.
+    *
+    * My Bachelor's project was about using types as search keys for Kotlin
+    * documentation. Kotlin later changed to Scala and the project evolved into
+    * Inkuire. The project was done togather with Andrzej Ratajczak and Filip
+    * Zybała. It was supervised by Bartosz Baliś.
+    *
+    * @see [[Projects.Inkuire]]
+    */
+  class Bachelors
+  /**
+    * I did my Masters in Computer Science at Chalmers University of Technology
+    * in Gothenburg.
+    *
+    * My Master's project was about verified inlining and specialisation for
+    * PureCake. My advisor was Magnus O. Myreen.
+    *
+    * @see [[Publications.VerifiedInliningandSpecialisationforPureCake]]
+    */
+  class Masters
+  /**
+    * I am currently doing my PhD at EPFL. (SystemF/LAMP)
     * 
     * I am currently doing my semester project in the SystemF lab.
     * 
     * I did my first semester project working on the Scala 3 Compiler, mainly the modularity improvements.
     */
-  class CurrentPosition
+  class PhD
+
+object WorkExperience:
+  /**
+    * I worked at VirtusLab as a Scala developer for slightly over 5 years.
+    *
+    * The projects I worked on were:
+    * - A production management system for medium sized companies.
+    * - Scala open-source projects e.g. Scaladoc, Inkuire, magnolia
+    * - Dotty - Scala 3 compiler
+    * - Scala 2 to Scala 3 migration for a large car manufacturer
+    * - Scala 3 SDK for pulumi called Besom (infrastucture as code)
+    * - SQL transpiler for federating BigData query execution between different
+    *   data warehouses for an AdTech/BigData company
+    *
+    * Technologies I used (in order of proficiency):
+    * - Scala (ZIO, Cats, Spark [Catalyst], Akka, Play!, Slick)
+    * - Java
+    * - SQL (PostgreSQL, SnowFlake, BigQuery, DuckDB, SparkSQL)
+    * - TypeScript, JavaScript (Angular, AngularJS)
+    * - HTML/CSS
+    */
+  class VirtusLab
