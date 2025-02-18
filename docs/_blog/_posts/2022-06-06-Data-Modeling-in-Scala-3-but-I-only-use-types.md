@@ -2,9 +2,8 @@
 layout: blog-page
 title: "Data Modeling in Scala 3, but I only use types"
 author: Kacper Korban
-subTitle: The Dotty compiler for Scala bootstraps.
-excerpt_separator: <!--more-->
-date: 2015-10-23
+tags: [scala, scala 3]
+date: 2022-06-06
 ---
 
 # Data Modeling in Scala 3, but I only use types

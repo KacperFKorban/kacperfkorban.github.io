@@ -3,6 +3,7 @@ layout: blog-page
 title: "TASTY way of (re)writing macros in Scala 3"
 author: Kacper Korban
 tags: [scala, scala 3]
+date: 2021-04-29
 ---
 
 # TASTY way of (re)writing macros in Scala 3
