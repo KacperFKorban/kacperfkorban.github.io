@@ -7,5 +7,6 @@ lazy val kacperfkorban = project.in(file("."))
       "-doc-root-content", "docs/rootdoc.md",
       "-social-links:github::https://github.com/KacperFKorban,twitter::https://x.com/KacperFKorban",
       "-Ygenerate-inkuire",
+      "-author"
     )
   )

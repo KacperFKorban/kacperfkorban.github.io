@@ -40,7 +40,7 @@ object Publications:
     * the HOL4 interactive theorem prover.
     * 
     * @see [[https://scholar.google.com/citations?view_op=view_citation&hl=pl&user=eTmlLwEAAAAJ&citation_for_view=eTmlLwEAAAAJ:d1gkVwhDpl0C]]
-    * @note Authors: Hrutvik Kanabar, Kacper Korban, Magnus O Myreen
+    * @author Hrutvik Kanabar, Kacper Korban, Magnus O Myreen
     * @since ESOP 2024
     */
   class VerifiedInliningandSpecialisationforPureCake
