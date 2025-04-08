@@ -38,6 +38,9 @@ jobs:
       - name: Generate documentation
         run: sbt doc
 
+      - name: Remove css
+        run: rm -rf target/scala-3.6.3/api/styles
+
       - name: Setup Pages
         uses: actions/configure-pages@v2
 
