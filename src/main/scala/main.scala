@@ -1,7 +1,7 @@
 /**
   * Some interesting projects, I have worked on.
   */
-object Projects:
+object OpenSourceContributions:
   /**
     * Dotty is the Scala 3 compiler. I worked on it both as part of the
     * VirtusLab team and as part of the LAMP/EPFL team.
@@ -115,3 +115,49 @@ object WorkExperience:
     * - HTML/CSS
     */
   class VirtusLab
+
+/**
+ * Student projects I supervise(d).
+ *
+ * **Don't hesitate to contact me** if you're interested in doing a student project
+ * related one of the following topics:
+ * - Verified compilation
+ * - Interactive theorem proving
+ * - Compilers (or concretely the Scala 3 compiler)
+ * - Developer tooling
+ *
+ */
+object SupervisedStudents:
+  /**
+    * Early Reclamation Of Lazy Values In Scala
+    * 
+    * The goal of the project was to add to the Scala 3 compiler the ability to
+    * force nullify last uses of local variables, so that the GC will be able to
+    * collect it.
+    * 
+    * This issue can be illustrated by a simple snippet:
+    *
+    * ```scala
+    *   def print_forever() =
+    *     val ints = LazyList.from(0)
+    *     ints.foreach(println)
+    * ```
+    * 
+    * This program crashes with an OOM, because the `ints` reference is still kept on the stack.
+    *
+    * @author Guillaume Carraux
+    * @see [[https://systemf.epfl.ch/blog/scala-explicit-reclamation/]]
+    */
+  class EarlyReclamationOfLazyValuesInScala
+
+  /** 
+    * Code Quality Feedback Tool for Students
+    *
+    * The goal of the project is to develop a tool that would give personalized
+    * feedback to students about potential code smells in theor code
+    * (submissions). This way, any student can get feedback that is specifically
+    * catered to the mistakes they did. 
+    *
+    * @author Sidonie Bouthors
+    */
+  class CodeQualityFeedbackToolforStudents
