@@ -1,4 +1,4 @@
-I'm Kacper Korban. I am a PhD student at EPFL (SystemF/LAMP).
+I'm Kacper Korban. I am a PhD student in [SystemF](https://systemf.epfl.ch/) at EPFL.
 
 My interests are in between formal verification (interactive theorem proving) and programming languages (compilers and types).
 
