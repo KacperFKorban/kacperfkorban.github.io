@@ -1,7 +1,7 @@
 ---
 layout: blog-page
 title: "How to write Hoogle for Kotlin in Scala (and Scala.js)"
-author: Kacper Korban and Andrzej Ratajczak
+author: Kacper F. Korban and Andrzej Ratajczak
 tags: [scala, scalajs, hoogle, kotlin]
 date: 2021-01-14
 ---

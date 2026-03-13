@@ -40,19 +40,32 @@ object Publications:
     * the HOL4 interactive theorem prover.
     * 
     * @see [[https://scholar.google.com/citations?view_op=view_citation&hl=pl&user=eTmlLwEAAAAJ&citation_for_view=eTmlLwEAAAAJ:d1gkVwhDpl0C]]
-    * @author Hrutvik Kanabar, Kacper Korban, Magnus O Myreen
+    * @author Hrutvik Kanabar, Kacper F. Korban, Magnus O Myreen
     * @since ESOP 2024
     */
   class VerifiedInliningandSpecialisationforPureCake
+
+/**
+  * A list of posters I have presented.
+  */
+object Posters:
+  /**
+    * **Bootstrapping a verified compiler for an imperative language in Rocq**
+    * 
+    * Silver medal at POPL'26 SRC
+    * 
+    * @see [[https://systemf.epfl.ch/posters/2025-bootstrapping/]]
+    * @author Kacper F. Korban, Magnus O Myreen, Clément Pit-Claudel
+    * @since POPL'26 SRC
+    */
+    class BootstrappingaverifiedcompilerforanimperativelanguageinRocq
 
 /**
   * Some basic info about me.
   */
 object AboutMe:
   /**
-    * Work e-mail kacper.korban@epfl.ch
-    * 
-    * Private e-mail: kacper.f.korban@gmail.com
+    * e-mail kacper.korban@epfl.ch
     */
   class Contact
 

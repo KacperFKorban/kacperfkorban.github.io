@@ -1,7 +1,7 @@
 ---
 layout: blog-page
 title: "Achieving Indisputable Job Security Using Novel Scala 3 Features: A Case Study"
-author: Kacper Korban
+author: Kacper F. Korban
 tags: [scala, scala 3]
 date: 2022-02-14
 ---

@@ -1,7 +1,7 @@
 ---
 layout: blog-page
 title: "Data Modeling in Scala 3, but I only use types"
-author: Kacper Korban
+author: Kacper F. Korban
 tags: [scala, scala 3]
 date: 2022-06-06
 ---
