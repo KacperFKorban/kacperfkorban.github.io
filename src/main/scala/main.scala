@@ -4,7 +4,7 @@
 object OpenSourceContributions:
   /**
     * Dotty is the Scala 3 compiler. I worked on it both as part of the
-    * VirtusLab team and as part of the LAMP/EPFL team.
+    * VirtusLab team and as part of the SYSTEMF/EPFL team.
     * 
     * @see [[https://github.com/scala/scala3]]
     */
@@ -96,7 +96,7 @@ object Education:
     */
   class Masters
   /**
-    * I am currently doing my PhD at EPFL. (SystemF/LAMP)
+    * I am currently doing my PhD at EPFL. (SYSTEMF)
     * 
     * I am currently doing my semester project in the SystemF lab.
     * 
