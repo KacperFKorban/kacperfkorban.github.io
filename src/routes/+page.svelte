@@ -47,6 +47,17 @@
           </div>
         </li>
         <li>
+          <span class="work-label">SCALA 2026</span>
+          <div>
+            <h3><a href="https://2026.workshop.scala-lang.org/details/scala-2026/3/Lorikeet-Flexible-code-rewriting-for-Scala-3">Lorikeet: Flexible code rewriting for Scala 3</a></h3>
+            <p class="entry-meta">Sidonie Bouthors, <strong>Kacper F. Korban</strong>, Clément Pit-Claudel</p>
+            <details>
+              <summary>Abstract</summary>
+              <p>Lorikeet is a Scala tool for automated code feedback and refactoring built on top of Scalafix. This tool allows users to specify code patterns and rewrites in a user-friendly DSL based on Scala. It can be used both as a developer tool, to help make large scale refactors, for example in the context of dependency updates, and as an educational tool, to give students feedback on the quality of their code.</p>
+            </details>
+          </div>
+        </li>
+        <li>
           <span class="work-label">ESOP 2024</span>
           <div>
             <h3><a href="https://scholar.google.com/citations?view_op=view_citation&amp;hl=pl&amp;user=eTmlLwEAAAAJ&amp;citation_for_view=eTmlLwEAAAAJ:d1gkVwhDpl0C">Verified Inlining and Specialisation for PureCake</a></h3>
