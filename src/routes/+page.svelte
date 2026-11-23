@@ -15,9 +15,20 @@
         <strong>Collaborations.</strong> I am always open to collaboration opportinuties, so if anything I do seems interesting: <a href="mailto:kacper.korban@epfl.ch">get in touch</a>.
       </aside>
     </div>
-    <figure class="portrait">
-      <img src="/images/portrait.jpg" alt="Portrait of Kacper F. Korban" width="3072" height="3072" />
-    </figure>
+    <aside class="introduction-sidebar" aria-label="Portrait and recent activity">
+      <figure class="portrait">
+        <img src="/images/portrait.jpg" alt="Portrait of Kacper F. Korban" width="3072" height="3072" />
+      </figure>
+      <section class="recent-activity" aria-labelledby="activity-title">
+        <h2 id="activity-title">Recent activity</h2>
+        <ul>
+          <li><time datetime="11.2026">Nov '26</time> Paper on bootstrapping a verified imperative compiler accepted to CPP'27!</li>
+          <li><time datetime="05.2026">May '26</time> Visited ENS Lyon and gave an (informal) talk about verified bootstrapping.</li>
+          <li><time datetime="04.2026">Apr '26</time> Paper on Flexible code rewriting for Scala 3 accepted to Scala Workshop 2026!</li>
+          <li><time datetime="01.2026">Jan '26</time> <a href="https://systemf.epfl.ch/posters/2025-bootstrapping/">Silver medal</a> at the POPL Student Research Competition.</li>
+        </ul>
+      </section>
+    </aside>
   </section>
 
   <section class="page-section structured-section" id="work" aria-labelledby="research-title">

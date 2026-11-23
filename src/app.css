@@ -70,7 +70,7 @@ h4 { font-size: 18px; line-height: 1.25; }
 p { margin-bottom: 14px; }
 time { font-variant-numeric: lining-nums; color: #555; }
 
-.introduction { display: grid; grid-template-columns: minmax(0, 1fr) 190px; gap: 44px; align-items: start; padding: 66px 0 31px; }
+.introduction { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 44px; align-items: start; padding: 66px 0 31px; }
 .introduction h1 { margin-bottom: 5px; }
 .affiliation { margin-bottom: 26px; font-family: Biolinum, Arial, sans-serif; font-size: 17px; }
 .introduction-copy > p:not(.affiliation) { max-width: 63ch; }
@@ -78,6 +78,13 @@ time { font-variant-numeric: lining-nums; color: #555; }
 .collaboration-disclaimer { max-width: 63ch; margin-top: 25px; padding: 11px 14px; border: 1px solid #d0d0cc; background: #eeeeea; color: #444; font: 16px/1.45 Biolinum, Arial, sans-serif; }
 .portrait { width: 190px; margin: 0; }
 .portrait img { display: block; width: 100%; border-radius: 50%; }
+.recent-activity { margin-top: 24px; font: 15px/1.4 Biolinum, Arial, sans-serif; }
+.recent-activity h2 { margin-bottom: 10px; font-size: 18px; }
+.recent-activity ul { margin: 0; padding: 0; list-style: none; }
+.recent-activity li { margin-bottom: 10px; }
+.recent-activity li:nth-child(n + 5) { display: none; }
+.recent-activity ul:has(li:nth-child(4))::after { content: '…'; }
+.recent-activity time { display: block; font-family: Inconsolata, Consolas, monospace; }
 .page-section { padding-top: 23px; margin-top: 32px; border-top: 1px solid #c9c9c9; scroll-margin-top: 18px; }
 .page-section h2 { margin-bottom: 21px; }
 .structured-section { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 28px; }
@@ -142,7 +149,8 @@ time { font-variant-numeric: lining-nums; color: #555; }
 
 @media (max-width: 700px) {
   .introduction { grid-template-columns: 1fr; gap: 12px; }
-  .portrait { grid-row: 1; width: 145px; }
+  .introduction-sidebar { grid-row: 1; }
+  .portrait { width: 145px; }
   .structured-section { grid-template-columns: 1fr; gap: 8px; }
 }
 @media (max-width: 560px) {
