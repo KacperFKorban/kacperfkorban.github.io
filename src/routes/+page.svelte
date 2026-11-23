@@ -9,9 +9,10 @@
       <h1 id="page-title">Kacper F. Korban</h1>
       <p class="affiliation">PhD student, <a href="https://systemf.epfl.ch/">SYSTEMF</a>, EPFL</p>
       <p>I am a PhD student at <a href="https://systemf.epfl.ch/">SYSTEMF</a>@EPFL, supervised by <a href="https://pit-claudel.fr/clement/">Clément Pit-Claudel</a>. My research is focused on compilers (especially verified ones), programming languages and formal verification. I am also interested in developer tooling, types, and software engineering in general.</p>
+      <p>Before coming to EPFL I did my Master's degree at Chalmers University of Technology. My Master's project was about Verified Inlining in PureCake, supervised by <a href="https://www.cse.chalmers.se/~myreen/">Magnus O. Myreen</a>. I also worked at <a href="https://virtuslab.com/">VirtusLab</a>, where among others I was involved in developing Scala (and related tools).</p>
       <p class="contact-links"><a href="mailto:kacper.korban@epfl.ch">E-mail</a> · <a href="https://github.com/KacperFKorban">GitHub</a> · <a href="https://scholar.google.com/citations?user=eTmlLwEAAAAJ">Google Scholar</a> · <a href="https://orcid.org/0009-0000-3878-2552">ORCID</a> · <a href="/cv.pdf">CV</a></p>
-      <aside class="student-project-disclaimer" aria-label="Student projects">
-        <strong>Student projects.</strong> If you are interested in verified compilation, interactive theorem proving, compilers, software verification, proof engineering, or developer tooling, <a href="mailto:kacper.korban@epfl.ch">get in touch</a>.
+      <aside class="collaboration-disclaimer" aria-label="Collaborations">
+        <strong>Collaborations.</strong> I am always open to collaboration opportinuties, so if anything I do seems interesting: <a href="mailto:kacper.korban@epfl.ch">get in touch</a>.
       </aside>
     </div>
     <figure class="portrait">
@@ -23,6 +24,17 @@
     <h2 id="research-title">Selected work</h2>
     <div class="section-body">
       <ul class="selected-work">
+        <li>
+          <span class="work-label">(to apprear in) CPP 2027</span>
+          <div>
+            <h3>Bootstrapping a Verified Compiler for an Imperative Language in Rocq and HOL4</h3>
+            <p class="entry-meta"><strong>Kacper F. Korban</strong>, Magnus O. Myreen, Clément Pit-Claudel</p>
+            <details>
+              <summary>Abstract</summary>
+              <p>Verified compilers are typically not verified end-to-end: theorems are proved about in-logic definitions, but the actual compiler binary is obtained using a combination of unverified extraction and unverified compilation. There is an alternative approach---bootstrapping: compiling the compiler with itself. This technique has been demonstrated for functional languages in HOL4 but neither for imperative languages nor in constructive proof assistants. We present a generic technique for bootstrapping verified compilers for imperative languages and demonstrate it with implementations in both Rocq and HOL4. In Rocq, our approach relies on a new variant of relational compilation that supports proof-producing reification of pattern matching and recursion, including nonstructural recursion.</p>
+            </details>
+          </div>
+        </li>
         <li>
           <span class="work-label">ESOP 2024</span>
           <div>
@@ -45,26 +57,3 @@
     </div>
   </section>
 </main>
-
-<!--  To make it easier: <a href="TEMPLATE_LINK">here is a template for the e-mail.</a> -->
-
-<!-- TEMPLATE CONTENT:
-Subject: Semester Project
-
-Hi Kacper,
-
-My name is [YOUR_NAME]. I am a student in [YOUR_MAJOR_AND_YEAR].
-I am interested in doing a semester project in:
-[REMOVE UNNECESSARY OR ADD YOUR OWN]
-- verified compilation
-- interactive theorem proving
-- compilers in general
-- verification of software
-- proof engineering
-- developer tooling
-
-[If you have a specific idea, write it here. Otherwise, leave blank. You can check out the list on the lab website for inspiration: https://systemf.epfl.ch/research.html#open-projects]
-
-Best regards,
-[YOUR_NAME]
--->

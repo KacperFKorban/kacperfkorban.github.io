@@ -75,7 +75,7 @@ time { font-variant-numeric: lining-nums; color: #555; }
 .affiliation { margin-bottom: 26px; font-family: Biolinum, Arial, sans-serif; font-size: 17px; }
 .introduction-copy > p:not(.affiliation) { max-width: 63ch; }
 .contact-links { margin-top: 25px; }
-.student-project-disclaimer { max-width: 63ch; margin-top: 25px; padding: 11px 14px; border: 1px solid #d0d0cc; background: #eeeeea; color: #444; font: 16px/1.45 Biolinum, Arial, sans-serif; }
+.collaboration-disclaimer { max-width: 63ch; margin-top: 25px; padding: 11px 14px; border: 1px solid #d0d0cc; background: #eeeeea; color: #444; font: 16px/1.45 Biolinum, Arial, sans-serif; }
 .portrait { width: 190px; margin: 0; }
 .portrait img { display: block; width: 100%; border-radius: 50%; }
 .page-section { padding-top: 23px; margin-top: 32px; border-top: 1px solid #c9c9c9; scroll-margin-top: 18px; }
